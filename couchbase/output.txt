@@ -1,0 +1,243 @@
+---- REGISTRY = gcr.io/couchbase-dev
+---- NAMESPACE = default
+-e [93m[1mAPP_DEPLOYER_IMAGE has been updated.[0m
+-e [93m[1m  old value: -n gcr.io/couchbase-dev/example/wordpress/deployer:latest[0m
+-e [93m[1m  new value: gcr.io/couchbase-dev/example/wordpress/deployer:latest[0m
+-e [93m[1mREGISTRY has been updated.[0m
+-e [93m[1m  old value: -n gcr.io/couchbase-dev[0m
+-e [93m[1m  new value: gcr.io/couchbase-dev[0m
+-e [93m[1mTAG has been updated.[0m
+-e [93m[1m  old value: -n latest[0m
+-e [93m[1m  new value: latest[0m
+
+[93m[1mBuilding .build/wordpress/deployer[0m
+
+docker build \
+	    --build-arg REGISTRY="gcr.io/couchbase-dev/example/wordpress" \
+	    --build-arg TAG="latest" \
+	    --tag "gcr.io/couchbase-dev/example/wordpress/deployer:latest" \
+	    -f deployer/Dockerfile \
+	    .
+Sending build context to Docker daemon  68.61kB
+Step 1/10 : FROM launcher.gcr.io/google/debian9 AS build
+ ---> 43873ad7a6bf
+Step 2/10 : RUN apt-get update     && apt-get install -y --no-install-recommends gettext
+ ---> Using cache
+ ---> 7cea5c344800
+Step 3/10 : ADD schema.yaml /tmp/schema.yaml
+ ---> 825387fe9f32
+Step 4/10 : ARG REGISTRY
+ ---> Running in 070d3609172a
+Removing intermediate container 070d3609172a
+ ---> 2cc1ddd16cbb
+Step 5/10 : ARG TAG
+ ---> Running in 1b35dcd37248
+Removing intermediate container 1b35dcd37248
+ ---> 81bb1021aa9c
+Step 6/10 : RUN cat /tmp/schema.yaml     | env -i "REGISTRY=$REGISTRY" "TAG=$TAG" envsubst     > /tmp/schema.yaml.new     && mv /tmp/schema.yaml.new /tmp/schema.yaml
+ ---> Running in f642dc8cf782
+Removing intermediate container f642dc8cf782
+ ---> d41cfe84145c
+Step 7/10 : FROM gcr.io/cloud-marketplace-tools/k8s/deployer_envsubst
+ ---> d23ff44e4914
+Step 8/10 : COPY manifest /data/manifest
+ ---> a8f32641f482
+Step 9/10 : COPY apptest/deployer /data-test/
+ ---> c0071577f4ba
+Step 10/10 : COPY --from=build /tmp/schema.yaml /data/
+ ---> 5f212ef6ed4b
+Successfully built 5f212ef6ed4b
+Successfully tagged gcr.io/couchbase-dev/example/wordpress/deployer:latest
+docker push "gcr.io/couchbase-dev/example/wordpress/deployer:latest"
+The push refers to repository [gcr.io/couchbase-dev/example/wordpress/deployer]
+7213d912bf91: Preparing
+22c5882a654e: Preparing
+05ae7fecb1ff: Preparing
+5d3cf6224711: Preparing
+5f92cc68cab5: Preparing
+19ec53bf8799: Preparing
+bf33e297fa97: Preparing
+d9c31f930d54: Preparing
+418bd778cea7: Preparing
+bf33e297fa97: Waiting
+d9c31f930d54: Waiting
+418bd778cea7: Waiting
+19ec53bf8799: Waiting
+5d3cf6224711: Layer already exists
+5f92cc68cab5: Layer already exists
+19ec53bf8799: Layer already exists
+bf33e297fa97: Layer already exists
+d9c31f930d54: Layer already exists
+418bd778cea7: Layer already exists
+7213d912bf91: Pushed
+05ae7fecb1ff: Pushed
+22c5882a654e: Pushed
+latest: digest: sha256:1a9ff094507bd889eaf697931307e862e4f8f1e5f5bc308a7f09305f5a1a5445 size: 2199
+
+[93m[1mBuilding .build/wordpress/init[0m
+
+cd init \
+	&& docker build --tag "gcr.io/couchbase-dev/example/wordpress/init:latest" .
+Sending build context to Docker daemon  9.728kB
+Step 1/5 : FROM launcher.gcr.io/google/debian9
+ ---> 43873ad7a6bf
+Step 2/5 : COPY metering.php.tmpl /
+ ---> Using cache
+ ---> f99170c67d58
+Step 3/5 : COPY agent-config.yaml /
+ ---> Using cache
+ ---> 64b0dd578b37
+Step 4/5 : COPY init.sh /
+ ---> Using cache
+ ---> 6704bcc1a5fc
+Step 5/5 : CMD ["/init.sh"]
+ ---> Using cache
+ ---> 83beddb1acf5
+Successfully built 83beddb1acf5
+Successfully tagged gcr.io/couchbase-dev/example/wordpress/init:latest
+docker push "gcr.io/couchbase-dev/example/wordpress/init:latest"
+The push refers to repository [gcr.io/couchbase-dev/example/wordpress/init]
+3905dcb0d512: Preparing
+545cc9485f71: Preparing
+543bcc678f2f: Preparing
+418bd778cea7: Preparing
+3905dcb0d512: Layer already exists
+543bcc678f2f: Layer already exists
+418bd778cea7: Layer already exists
+545cc9485f71: Layer already exists
+latest: digest: sha256:785822424d68aec1f6c2126c496fdc766eeacf5e34f36923cf2a821a8e4aa063 size: 1151
+
+[93m[1mBuilding .build/wordpress/mysql[0m
+
+docker pull launcher.gcr.io/google/mysql5
+Using default tag: latest
+latest: Pulling from google/mysql5
+Digest: sha256:e336b11c5902f11d6571ac9d77dc2253f2a8f7efc858478182cb930ca8abeb58
+Status: Image is up to date for launcher.gcr.io/google/mysql5:latest
+docker tag launcher.gcr.io/google/mysql5 "gcr.io/couchbase-dev/example/wordpress/mysql:latest"
+docker push "gcr.io/couchbase-dev/example/wordpress/mysql:latest"
+The push refers to repository [gcr.io/couchbase-dev/example/wordpress/mysql]
+f29205a19c18: Preparing
+2517d424a7a2: Preparing
+70c91b2133b6: Preparing
+aaf08774071f: Preparing
+28a3ced9f2d3: Preparing
+e21ec008a287: Preparing
+7975931f3c32: Preparing
+ffeb1b260eff: Preparing
+306fef2f9cad: Preparing
+da789fca3790: Preparing
+418bd778cea7: Preparing
+e21ec008a287: Waiting
+ffeb1b260eff: Waiting
+da789fca3790: Waiting
+306fef2f9cad: Waiting
+418bd778cea7: Waiting
+7975931f3c32: Waiting
+2517d424a7a2: Layer already exists
+aaf08774071f: Layer already exists
+70c91b2133b6: Layer already exists
+f29205a19c18: Layer already exists
+28a3ced9f2d3: Layer already exists
+e21ec008a287: Layer already exists
+7975931f3c32: Layer already exists
+306fef2f9cad: Layer already exists
+ffeb1b260eff: Layer already exists
+da789fca3790: Layer already exists
+418bd778cea7: Layer already exists
+latest: digest: sha256:e336b11c5902f11d6571ac9d77dc2253f2a8f7efc858478182cb930ca8abeb58 size: 2617
+
+[93m[1mBuilding .build/wordpress/ubbagent[0m
+
+docker tag "gcr.io/cloud-marketplace-tools/ubbagent" "gcr.io/couchbase-dev/example/wordpress/ubbagent:latest"
+docker push "gcr.io/couchbase-dev/example/wordpress/ubbagent:latest"
+The push refers to repository [gcr.io/couchbase-dev/example/wordpress/ubbagent]
+7dddaa773332: Preparing
+4191b2c129fb: Preparing
+91a96912be70: Preparing
+cd7100a72410: Preparing
+91a96912be70: Layer already exists
+7dddaa773332: Layer already exists
+4191b2c129fb: Layer already exists
+cd7100a72410: Layer already exists
+latest: digest: sha256:ae305cbdd89dc488e75002c4003cdc92f7dc805cd3e1902a91019ed52535a284 size: 1156
+
+[93m[1mBuilding .build/wordpress/wordpress[0m
+
+docker pull launcher.gcr.io/google/wordpress4-php5-apache
+Using default tag: latest
+latest: Pulling from google/wordpress4-php5-apache
+Digest: sha256:56ddf721b17f5cf5632c78f0391f518208d9a7e9bc97303e950e41b5c711da82
+Status: Image is up to date for launcher.gcr.io/google/wordpress4-php5-apache:latest
+docker tag launcher.gcr.io/google/wordpress4-php5-apache "gcr.io/couchbase-dev/example/wordpress:latest"
+docker push "gcr.io/couchbase-dev/example/wordpress:latest"
+The push refers to repository [gcr.io/couchbase-dev/example/wordpress]
+f92987958c8b: Preparing
+86873a68fe19: Preparing
+81e8b7ebb81a: Preparing
+83e60ebe3781: Preparing
+d37e8fdfe5a4: Preparing
+dc05b019bf9a: Preparing
+3e5f2ebcd7e7: Preparing
+c62027c5fe83: Preparing
+d912bc35e077: Preparing
+191993218326: Preparing
+c11bf8217fbf: Preparing
+485827ac834b: Preparing
+3b05333fd876: Preparing
+6e6dfe4d7c4d: Preparing
+e655b4101156: Preparing
+d47bedcc8db7: Preparing
+f83b3e71cef1: Preparing
+3cf4b8e5ff23: Preparing
+ee925999e89d: Preparing
+62ae6d9f855c: Preparing
+3e5f2ebcd7e7: Waiting
+191993218326: Waiting
+c11bf8217fbf: Waiting
+c62027c5fe83: Waiting
+485827ac834b: Waiting
+d912bc35e077: Waiting
+3b05333fd876: Waiting
+6e6dfe4d7c4d: Waiting
+e655b4101156: Waiting
+d47bedcc8db7: Waiting
+f83b3e71cef1: Waiting
+3cf4b8e5ff23: Waiting
+62ae6d9f855c: Waiting
+dc05b019bf9a: Waiting
+f92987958c8b: Layer already exists
+d37e8fdfe5a4: Layer already exists
+83e60ebe3781: Layer already exists
+81e8b7ebb81a: Layer already exists
+86873a68fe19: Layer already exists
+dc05b019bf9a: Layer already exists
+3e5f2ebcd7e7: Layer already exists
+191993218326: Layer already exists
+d912bc35e077: Layer already exists
+c62027c5fe83: Layer already exists
+c11bf8217fbf: Layer already exists
+485827ac834b: Layer already exists
+e655b4101156: Layer already exists
+3b05333fd876: Layer already exists
+6e6dfe4d7c4d: Layer already exists
+d47bedcc8db7: Layer already exists
+f83b3e71cef1: Layer already exists
+3cf4b8e5ff23: Layer already exists
+ee925999e89d: Layer already exists
+62ae6d9f855c: Layer already exists
+latest: digest: sha256:56ddf721b17f5cf5632c78f0391f518208d9a7e9bc97303e950e41b5c711da82 size: 4492
+-e [93m[1mMARKETPLACE_TOOLS_PATH has been updated.[0m
+-e [93m[1m  old value: -n /Users/shomariliburd/repos/git/couchbase-partners/marketplace-k8s-app-example/vendor/marketplace-tools[0m
+-e [93m[1m  new value: /Users/shomariliburd/repos/git/couchbase-partners/marketplace-k8s-app-example/vendor/marketplace-tools[0m
+-e [93m[1mAPP_PARAMETERS has been updated.[0m
+-e [93m[1m  old value: -n { name: wordpress-1, namespace: default, imageWordpress: gcr.io/couchbase-dev/example/wordpress:latest, imageInit: gcr.io/couchbase-dev/example/wordpress/init:latest, imageMysql: gcr.io/couchbase-dev/example/wordpress/mysql:latest, imageUbbagent: gcr.io/couchbase-dev/example/wordpress/ubbagent:latest, reportingSecret: wordpress-1-reporting-secret }[0m
+-e [93m[1m  new value: { name: wordpress-1, namespace: default, imageWordpress: gcr.io/couchbase-dev/example/wordpress:latest, imageInit: gcr.io/couchbase-dev/example/wordpress/init:latest, imageMysql: gcr.io/couchbase-dev/example/wordpress/mysql:latest, imageUbbagent: gcr.io/couchbase-dev/example/wordpress/ubbagent:latest, reportingSecret: wordpress-1-reporting-secret }[0m
+/Users/shomariliburd/repos/git/couchbase-partners/marketplace-k8s-app-example/vendor/marketplace-tools/scripts/start.sh \
+	    --deployer='gcr.io/couchbase-dev/example/wordpress/deployer:latest' \
+	    --parameters='{ "name": "wordpress-1", "namespace": "default", "imageWordpress": "gcr.io/couchbase-dev/example/wordpress:latest", "imageInit": "gcr.io/couchbase-dev/example/wordpress/init:latest", "imageMysql": "gcr.io/couchbase-dev/example/wordpress/mysql:latest", "imageUbbagent": "gcr.io/couchbase-dev/example/wordpress/ubbagent:latest", "reportingSecret": "wordpress-1-reporting-secret" }'
+application.app.k8s.io "wordpress-1" created
+configmap "wordpress-1-deployer-config" created
+serviceaccount "wordpress-1-deployer-sa" created
+rolebinding.rbac.authorization.k8s.io "wordpress-1-deployer-rb" created
+job.batch "wordpress-1-deployer" created

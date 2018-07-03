@@ -1,0 +1,71 @@
+properties:
+  operatorServiceAccount:
+    type: string
+    x-google-marketplace:
+      type: SERVICE_ACCOUNT
+  dbUsername:
+    type: string
+    default: "couchbase_admin"
+  couchbaseOperatorImage:
+    type: string
+    default: gcr.io/couchbase-dev/couchbase/k8s-operator:beta
+    x-google-marketplace:
+      type: IMAGE
+  initialDelaySeconds:
+    title: Initial Delay in Seconds
+    type: integer
+    default: 30
+    minimum: 1
+    maximum: 5000
+  containerPort:
+    title: Container Port
+    type: integer
+    default: 8080
+    minimum: 1024
+    maximum: 65535
+  name:
+    type: string
+    x-google-marketplace:
+      type: NAME
+  namespace:
+    type: string
+    x-google-marketplace:
+      type: NAMESPACE
+  imageUbbagent:
+    type: string
+    default: $REGISTRY/ubbagent:$TAG
+    x-google-marketplace:
+      type: IMAGE
+  dbPassword:
+    type: string
+    x-google-marketplace:
+      type: GENERATED_PASSWORD
+      generatedPassword:
+        length: 16
+  customInteger:
+    title: Server replicas
+    type: integer
+    default: 1
+    minimum: 1
+    maximum: 128
+  customBoolean:
+    title: A custom boolean parameter.
+    type: boolean
+    default: false
+  # reportingSecret:
+   # type: string
+   # x-google-marketplace:
+   #   type: REPORTING_SECRET
+required:
+- operatorServiceAccount
+- dbUsername
+- containerPort
+- couchbaseOperatorImage
+- initialDelaySeconds
+- name
+- namespace
+- imageUbbagent
+- dbPassword
+- customInteger
+- customBoolean
+# - reportingSecret
