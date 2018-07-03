@@ -34,7 +34,7 @@ metadata:
     app.kubernetes.io/component: wordpress-mysql
 type: Opaque
 data:
-  username: "dXNlcgo="
+  username: QWRtaW5pc3RyYXRvcg==
   password: $dbPassword
 ---
 apiVersion: extensions/v1beta1
@@ -51,6 +51,8 @@ spec:
       labels:
         name: couchbase-operator
     spec:
+    spec:
+      serviceAccountName: $operatorServiceAccount
       containers:
       - name: couchbase-operator
         image: "$couchbaseOperatorImage"

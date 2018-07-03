@@ -3,6 +3,40 @@ properties:
     type: string
     x-google-marketplace:
       type: SERVICE_ACCOUNT
+      serviceAccount:
+        roles:
+        - type: ClusterRole
+          rulesType: CUSTOM
+          rules:
+          - apiGroups:
+            - couchbase.database.couchbase.com
+            resources:
+            - couchbaseclusters
+            verbs:
+            - "*"
+          - apiGroups:
+            - apiextensions.k8s.io
+            resources:
+            - customresourcedefinitions
+            verbs:
+            - "*"
+          - apiGroups:
+            - ""
+            resources:
+            - pods
+            - services
+            - endpoints
+            - persistentvolumeclaims
+            - events
+            - secrets
+            verbs:
+            - "*"
+          - apiGroups:
+            - apps
+            resources:
+            - deployments
+            verbs:
+            - "*"
   dbUsername:
     type: string
     default: "couchbase_admin"
@@ -31,11 +65,6 @@ properties:
     type: string
     x-google-marketplace:
       type: NAMESPACE
-  imageUbbagent:
-    type: string
-    default: $REGISTRY/ubbagent:$TAG
-    x-google-marketplace:
-      type: IMAGE
   dbPassword:
     type: string
     x-google-marketplace:
@@ -64,7 +93,6 @@ required:
 - initialDelaySeconds
 - name
 - namespace
-- imageUbbagent
 - dbPassword
 - customInteger
 - customBoolean
