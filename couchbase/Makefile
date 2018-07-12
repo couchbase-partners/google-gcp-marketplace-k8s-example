@@ -1,5 +1,4 @@
-TAG ?= latest
-BETA_TAG ?= beta
+
 # crd.Makefile provides targets to install Application CRD.
 include ../vendor/marketplace-tools/crd.Makefile
 
@@ -20,15 +19,15 @@ include ../vendor/marketplace-tools/var.Makefile
 
 # app.Makefile provides the main targets for installing the
 # application.
-# It requires several APP_* variables defined as followed.
+# It require s several APP_* variables defined as followed.
 include ../vendor/marketplace-tools/app.Makefile
 
-APP_DEPLOYER_IMAGE ?= $(REGISTRY)/deployer:$(TAG)
-NAME ?= cb-operator-1
+APP_DEPLOYER_IMAGE ?= $(CB_DEPLOYER_IMAGE)
+#NAME ?= cb-operator-1
 APP_PARAMETERS ?= { \
   "name": "$(NAME)", \
   "namespace": "$(NAMESPACE)", \
-  "couchbaseOperatorImage": "$(REGISTRY)/couchbase/k8s-operator:$(BETA_TAG)" \
+  "couchbaseOperatorImage": "$(CB_OP_IMAGE)" \
 }
 #TESTER_IMAGE ?= $(REGISTRY)/example/wordpress/tester:$(TAG)
 APP_TEST_PARAMETERS ?= { \
@@ -54,7 +53,7 @@ app/build:: .build/couchbase/deployer
                            | .build/couchbase
 	$(call print_target, $@)
 	docker build \
-	    --build-arg REGISTRY="$(REGISTRY)/couchbase" \
+	    --build-arg REGISTRY="$(REGISTRY)" \
 	    --build-arg TAG="$(TAG)" \
 	    --tag "$(APP_DEPLOYER_IMAGE)" \
 	    -f deployer/Dockerfile \

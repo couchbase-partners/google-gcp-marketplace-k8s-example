@@ -1,6 +1,7 @@
 properties:
   operatorServiceAccount:
     type: string
+    title: Operator Service Account
     x-google-marketplace:
       type: SERVICE_ACCOUNT
       serviceAccount:
@@ -39,10 +40,17 @@ properties:
             - "*"
   dbUsername:
     type: string
-    default: "couchbase_admin"
+    title: Administrator Username
+    default: "Administrator"
+  dbPassword:
+    type: string
+    x-google-marketplace:
+      type: GENERATED_PASSWORD
+      generatedPassword:
+        length: 16
   couchbaseOperatorImage:
     type: string
-    default: gcr.io/couchbase-dev/couchbase/k8s-operator:beta
+    default: gcr.io/couchbase-dev/k8s/operator:1.0
     x-google-marketplace:
       type: IMAGE
   initialDelaySeconds:
@@ -51,12 +59,54 @@ properties:
     default: 30
     minimum: 1
     maximum: 5000
+  periodSeconds:
+    title: Period Delay in Seconds
+    type: integer
+    default: 5
+    minimum: 1
+    maximum: 5000
+  failureThreshold:
+    title: Failure Threshold
+    type: integer
+    default: 19
+    minimum: 1
+    maximum: 5000
+  operatorReplicas:
+    title: Operator replicas
+    type: integer
+    default: 1
+    minimum: 1
+    maximum: 10
+  clusterReplicas:
+    title: Couchbase Cluster Replicas
+    type: integer
+    default: 3
+    minimum: 1
+    maximum: 300
   containerPort:
     title: Container Port
     type: integer
     default: 8080
     minimum: 1024
     maximum: 65535
+  dataServiceMemoryQuota:
+    title: Data Service Memory Quota
+    type: integer
+    default: 256
+    minimum: 256
+    maximum: 2147483647
+  indexServiceMemoryQuota:
+    title: Index Service Memory Quota
+    type: integer
+    default: 256
+    minimum: 256
+    maximum: 2147483647
+  searchServiceMemoryQuota:
+    title: Search Service Memory Quota
+    type: integer
+    default: 256
+    minimum: 256
+    maximum: 2147483647
   name:
     type: string
     x-google-marketplace:
@@ -65,35 +115,23 @@ properties:
     type: string
     x-google-marketplace:
       type: NAMESPACE
-  dbPassword:
-    type: string
-    x-google-marketplace:
-      type: GENERATED_PASSWORD
-      generatedPassword:
-        length: 16
-  customInteger:
-    title: Server replicas
-    type: integer
-    default: 1
-    minimum: 1
-    maximum: 128
-  customBoolean:
-    title: A custom boolean parameter.
-    type: boolean
-    default: false
   # reportingSecret:
    # type: string
    # x-google-marketplace:
    #   type: REPORTING_SECRET
 required:
-- operatorServiceAccount
 - dbUsername
+- dbPassword
 - containerPort
 - couchbaseOperatorImage
 - initialDelaySeconds
+- periodSeconds
+- failureThreshold
+- operatorReplicas
+- clusterReplicas
+- dataServiceMemoryQuota
+- indexServiceMemoryQuota
+- searchServiceMemoryQuota
 - name
 - namespace
-- dbPassword
-- customInteger
-- customBoolean
 # - reportingSecret
