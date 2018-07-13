@@ -2,14 +2,15 @@
 
 Couchbase’s mission is to be the data platform that revolutionizes digital innovation. To make this possible, Couchbase created the world’s first Engagement Database, built on the most powerful NoSQL technology.
 
-The Couchbase Autonomous Operator manages deployments of Couchbase Clusters on Kubernetes.
-`
-The Couchbase Autonomous Operator for Kubernetes enables cloud portability and automates operational best practices for deploying and managing the Couchbase Data Platform. To optimize integration, we maintain strategic partnerships with enterprise Kubernetes providers, including the Red Hat OpenShift Container Platform. As a result, we’re the only NoSQL vendor to offer native integration of Kubernetes with the Couchbase Data Platform
-`
+> The Couchbase Autonomous Operator for Kubernetes enables cloud portability and automates > > operational best practices for deploying and managing the Couchbase Data Platform. To optimize integration, we maintain strategic partnerships with enterprise Kubernetes providers, including the Red Hat OpenShift Container Platform. As a result, we’re the only NoSQL vendor to offer native integration of Kubernetes with the Couchbase Data Platform
 
-## Installation
+## Prerequisites
 
-## Quick Install with Google Cloud Marketplace
+#### Acquire License
+
+The Couchbase Autnomous Operator is currently in beta; so there is no cost to use it at this time. However, the Couchbase Clusters that you deploy require your own [licenses](https://www.couchbase.com/legal/agreements#ProductLicenses), where applicable.
+
+### UI Installation with Google Cloud Marketplace
 
 Get up and running with a few clicks! Install the Couchbase Operator app to a
 Google Kubernetes Engine cluster using Google Cloud Marketplace. Follow the
@@ -17,22 +18,14 @@ on-screen instructions:
 
 *TODO: link to solution details page*
 
-## Command line instructions
-
-First you need to setup gcloud
-
-### Prerequisites
-
-#### Acquire License
-
-The Couchbase Autnomous Operator is currently in beta.  There is no cost to use it at this time.  The Couchbase Clusters you use. Require your own [licenses](https://www.couchbase.com/legal/agreements#ProductLicenses).
+### Command-line instructions
 
 There are some steps that you we have to complete before we can get to installing Couchbase in the Marketplace.  It is important to know there will
 be some command line work as we will be using the Couchbase Admin WebUI to manage the clusters.  This means you **can not use the cloud shell** to complete all steps.
 
-### UI Deployments
+### Google Cloud MarketPlace UI Deployments
 
-For those using the __Kubernetes Apps MarketPlace UI__ to deploy, only need to follow select sections:
+For those using the __Google Cloud MarketPlace UI__ to deploy, only need to follow select sections:
 
 Tool dependencies:
 
@@ -46,9 +39,9 @@ If you are using the command line all sections are relevant.
 
 These [instructions](https://github.com/GoogleCloudPlatform/marketplace-k8s-app-tools/) gives you the core pieces that you need.
 
-### Commandline Deployment Setup
+### Commandline Setup
 
-Start by loning the repo from [github](https://github.com/couchbase-partners/marketplace-k8s-app-example/).
+Start by cloning the repo from [github](https://github.com/couchbase-partners/marketplace-k8s-app-example/).
 
 These [instructions](https://github.com/GoogleCloudPlatform/marketplace-k8s-app-tools/) gives you the core pieces that you need.
 
