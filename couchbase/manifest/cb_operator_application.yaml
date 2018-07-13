@@ -1,0 +1,178 @@
+apiVersion: app.k8s.io/v1alpha1
+kind: Application
+metadata:
+  name: "$name"
+  namespace: "$namespace"
+  annotations:
+    marketplace.cloud.google.com/deploy-info: '{partner_id: "couchbase-dev", product_id: "couchbase-operator", partner_name: "Couchbase"}'
+  labels:
+    app.kubernetes.io/name: "$name"
+spec:
+  descriptor:
+    description: >-
+      The world's most powerful NoSQL database and the Couchbase Autonomous Operator
+
+      # Learn more at Couchbase.com
+    links:
+    - description: 'For all things related to Couchbase please start at:'
+      url: https://www.couchbase.com/
+    - description: 'Learn more about the Couchbase Autonomous Operator'
+      url: https://www.couchbase.com/products/cloud/kubernetes
+    - description: 'EULA'
+      url: https://www.couchbase.com/ESLA02152018
+    - description: 'The Couchbase Autonomous Operator is in Beta.  Please BYOL for the Couchbase Clusters you deploy via the Operator'
+      url: https://www.couchbase.com/legal/agreements#ProductLicenses
+    - description: 'Full github walkthrough'
+      url: https://github.com/GoogleCloudPlatform/marketplace-k8s-app-tools
+    notes: |-
+
+      ## Prequisites
+
+      There are some steps that you we have to complete before we can get to installing Couchbase in the Marketplace.  It is important to know there will
+      be some command line work as we will be using the Couchbase Admin WebUI to manage the clusters.  This means you **can not use the cloud shell** to complete all steps.
+      
+      ### UI Deployments
+      For those using the __Kubernetes Apps MarketPlace UI__ to deploy, only need to follow select sections:
+      
+      Tool dependencies:
+      - gcloud
+      - kubectl
+
+      Authorization:
+      Provisioning a GKE cluster and configuring kubectl to connect to it:
+
+      These [instructions](https://github.com/GoogleCloudPlatform/marketplace-k8s-app-tools/) gives you the core pieces that you need.
+
+      # Deploy Couchbase Clusters
+      
+      You have deployed through the MarketPlace UI and are the post-deploy page. 
+      The Operator is now running spo let's take a look with:
+
+      `kubectl get deployments -o wide`
+
+      To run a Couchbase Cluster we create a file yaml :
+      ```yaml
+      ApiVersion: couchbase.database.couchbase.com/v1beta1
+      kind: CouchbaseCluster
+      metadata:
+        name: cb-cluster-member
+      spec:
+        baseImage: couchbase/server
+        version: enterprise-5.1.0
+        authSecret: cb-operator-1-secret
+        exposeAdminConsole: true
+        cluster:
+          dataServiceMemoryQuota: 256
+          indexServiceMemoryQuota: 256
+          searchServiceMemoryQuota: 256
+          indexStorageSetting: memory_optimized
+          autoFailoverTimeout: 5
+        buckets:
+          - name: default
+            type: couchbase
+            memoryQuota: 128
+            replicas: 2
+            ioPriority: high
+            evictionPolicy: fullEviction
+            conflictResolution: seqno
+            enableFlush: true
+            enableIndexReplica: false
+        servers:
+          - size: 5
+            name: all_services
+            services:
+              - data
+              - index
+              - query
+              - search
+            dataPath: /opt/couchbase/var/lib/couchbase/data
+            indexPath: /opt/couchbase/var/lib/couchbase/data
+      ```
+      Edit the file as you see fit
+
+      Now we use that to deploy our Couchbase Clusters with:
+
+      `kubectl apply -f created-cb-cluster.yaml`
+
+      Wait until at least the first node is ready
+
+      `kubectl get pods --watch`
+
+      Control-C to cancel the watch after at least one is ready.
+
+      Now we need to forward ports so we can access the Couchbase WebUI.  Open a new terminal window and run:
+
+      `kubectl port-forward cb-cluster-member-0000 8091:8091`
+
+      In a browser window navigate to the [Couchbase Web UI](https://localhost:8091)
+      
+      Your login information is on the right of the post-deploy page.
+
+      fin
+  type: Couchbase
+  version: '0.81beta'
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: "$name"
+  componentKinds:
+  - group: apps/v1beta2
+    kind: Deployment
+  - group: batch/v1
+    kind: Job
+  - group: v1
+    kind: PersistentVolumeClaim
+  - group: v1
+    kind: Secret
+  - group: v1
+    kind: Service
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: "$name-secret"
+  labels:
+    app.kubernetes.io/name: "$name"
+type: Opaque
+data:
+  username: $dbUsername
+  password: $dbPassword
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: couchbase-operator
+  namespace: "$namespace"
+  labels:
+    app.kubernetes.io/name: "$name"
+spec:
+  replicas: $operatorReplicas
+  template:
+    metadata:
+      labels:
+        name: couchbase-operator
+    spec:
+    spec:
+      serviceAccountName: $operatorServiceAccount
+      containers:
+      - name: couchbase-operator
+        image: "$couchbaseOperatorImage"
+        env:
+        - name: MY_POD_NAMESPACE
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.namespace
+        - name: MY_POD_NAME
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.name
+        ports:
+          - name: readiness-port
+            containerPort: $containerPort
+        readinessProbe:
+          httpGet:
+            path: /readyz
+            port: readiness-port
+          initialDelaySeconds: $initialDelaySeconds
+          periodSeconds: $periodSeconds
+          failureThreshold: $failureThreshold
+---

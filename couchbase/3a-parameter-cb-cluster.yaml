@@ -5,27 +5,26 @@ metadata:
 spec:
   baseImage: couchbase/server
   version: enterprise-5.1.0
-  authSecret: cb-operator-1-secret
-  #authSecret: cb-auth
+  authSecret: $SECRET_NAME
   exposeAdminConsole: true
   cluster:
-    dataServiceMemoryQuota: 256
-    indexServiceMemoryQuota: 256
-    searchServiceMemoryQuota: 256
+    dataServiceMemoryQuota: $DATA_SVC_QUOTA
+    indexServiceMemoryQuota: $IDX_SVC_QUOTA
+    searchServiceMemoryQuota: $SRC_SVC_QUOTA
     indexStorageSetting: memory_optimized
-    autoFailoverTimeout: 30
+    autoFailoverTimeout: 5
   buckets:
     - name: default
       type: couchbase
       memoryQuota: 128
-      replicas: 1
+      replicas: $CLUSTER_REPLICAS
       ioPriority: high
       evictionPolicy: fullEviction
       conflictResolution: seqno
       enableFlush: true
       enableIndexReplica: false
   servers:
-    - size: 3
+    - size: 5
       name: all_services
       services:
         - data

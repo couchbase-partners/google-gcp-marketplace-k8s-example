@@ -9,9 +9,11 @@ spec:
       labels:
         name: couchbase-operator
     spec:
+      serviceAccountName: cb-op-svc-account
       containers:
       - name: couchbase-operator
-        image: couchbase/k8s-operator:beta
+       # image: couchbase/k8s-operator:beta
+        image: gcr.io/couchbase-dev/k8s/operator:1.0
         env:
         - name: MY_POD_NAMESPACE
           valueFrom:

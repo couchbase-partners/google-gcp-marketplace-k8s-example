@@ -27,7 +27,18 @@ APP_DEPLOYER_IMAGE ?= $(CB_DEPLOYER_IMAGE)
 APP_PARAMETERS ?= { \
   "name": "$(NAME)", \
   "namespace": "$(NAMESPACE)", \
-  "couchbaseOperatorImage": "$(CB_OP_IMAGE)" \
+  "couchbaseOperatorImage": "$(CB_OP_IMAGE)", \
+  "dbUsername": "$(DB_USERNAME)", \
+  "dbPassword": "$(DB_PASSWORD)", \
+  "initialDelaySeconds": "$(INIT_DELAY_SEC)", \
+  "periodSeconds": "$(PERIOD_SEC)", \
+  "failureThreshold": "$(FAIL_THRESHOLD)", \
+  "operatorReplicas": "$(OP_REPLICAS)", \
+  "clusterReplicas": "$(CLUSTER_REPLICAS)", \
+  "containerPort": "$(CONTAINER_PORT)", \
+  "dataServiceMemoryQuota": "$(DATA_SVC_QUOTA)", \
+  "indexServiceMemoryQuota": "$(IDX_SVC_QUOTA)", \
+  "searchServiceMemoryQuota": "$(SRC_SVC_QUOTA)" \
 }
 #TESTER_IMAGE ?= $(REGISTRY)/example/wordpress/tester:$(TAG)
 APP_TEST_PARAMETERS ?= { \
