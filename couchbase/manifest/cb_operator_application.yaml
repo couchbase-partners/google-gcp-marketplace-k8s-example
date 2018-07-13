@@ -109,6 +109,13 @@ spec:
       Your login information is on the right of the post-deploy page.
 
       fin
+  info:
+  - name: Password
+    type: Reference
+    valueFrom:
+      secretKeyRef:
+        key: password
+        name: $APP_INSTANCE_NAME-secret
   type: Couchbase
   version: '0.81beta'
   selector:
