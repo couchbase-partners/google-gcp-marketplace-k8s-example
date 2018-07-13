@@ -42,11 +42,6 @@ properties:
     type: string
     title: Administrator Username
     default: "Administrator"
-    x-google-marketplace:
-      type: STRING
-      string:
-        generatedProperties:
-          base64Encoded: dbUsernameBase64
   dbPassword:
     type: string
     x-google-marketplace:
