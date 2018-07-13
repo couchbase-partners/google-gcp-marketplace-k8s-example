@@ -134,7 +134,7 @@ metadata:
     app.kubernetes.io/name: "$name"
 type: Opaque
 data:
-  username: QWRtaW5pc3RyYXRvcg==
+  username: $dbUsernameBase64
   password: $dbPassword
 ---
 apiVersion: extensions/v1beta1
