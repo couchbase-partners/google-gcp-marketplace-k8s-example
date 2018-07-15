@@ -1,4 +1,4 @@
-apiVersion: app.k8s.io/v1alpha1
+apiVersion: app.k8s.io/v1beta1
 kind: Application
 metadata:
   name: "$name"
@@ -9,32 +9,28 @@ metadata:
     app.kubernetes.io/name: "$name"
 spec:
   descriptor:
-    description: >-
-      The world's most powerful NoSQL database and the Couchbase Autonomous Operator
-
+    description: |-
+      Manage Couchbase Deployments on Kubernetes
     links:
     - description: 'For all things related to Couchbase:'
       url: https://www.couchbase.com/
-    - description: 'Learn more about the Couchbase Autonomous Operator'
+    - description: 'Manage Couchbase Deployments on Kubernetes'
       url: https://www.couchbase.com/products/cloud/kubernetes
+    - description: 'The Couchbase Autonomous Operator is currently in Beta.  Please BYOL for the Couchbase Clusters you deploy via the Operator'
+      url: https://www.couchbase.com/legal/agreements#ProductLicenses
+    - description: 'Full GitHub walkthrough'
+      url: https://github.com/couchbase-partners/marketplace-k8s-app-example/
     - description: 'EULA'
       url: https://www.couchbase.com/ESLA02152018
-    - description: 'The Couchbase Autonomous Operator is in Beta.  Please BYOL for the Couchbase Clusters you deploy via the Operator'
-      url: https://www.couchbase.com/legal/agreements#ProductLicenses
-    - description: 'Full github walkthrough'
-      url: https://github.com/couchbase-partners/marketplace-k8s-app-example/
     notes: |-
-
-
-      ## The Couchbase Autonomous Operator is installed now what?
+      If all listings display a green checkbox, congratulations you have sucessfully installed the Couchbase Autonomus Operator!   
       
-      If you see all green checkboxes on the right, you have sucessfully installed the Couchbase Autonomus Operator.  The job of the Couchbase Autonomous Operator 
-      is to Manage Couchbase Deployments on Kubernetes.  Now we move on to doing that.  The following steps takes a bit of setup but are nothing too difficult.
-
-      There will be some command-line work. We will be using the Couchbase Admin WebUI to manage the clusters.
+      The job of the Couchbase Autonomous Operator is to Manage Couchbase Deployments on Kubernetes; so let's work on to doing that.  
+      
+      The following steps takes a bit of setup but are nothing too difficult.  There will be some command-line work; since we will be using the Couchbase Web Console to manage the clusters.
       Doing that requires access to a browser from a local environment.  
       
-      The most important thing to note is you **can not use the cloud shell** to complete all steps.
+      The most important thing to note is you **can not use the cloud shell** if you would like to use the Couchbase Web Console.
        
       ### Tool dependencies and install instructions
       
@@ -133,19 +129,17 @@ spec:
       cb-cluster-member-0000                              1/1       Running
       ```
 
-      Now we need to forward ports so we can access the Couchbase WebUI.  Open a __new terminal window__ and run:
+      Now we need to forward ports so that we can access the Couchbase Web Console.  Open a __new terminal window__ and run:
 
       `kubectl port-forward cb-cluster-member-0000 8091:8091`
 
-      We are almost finished.  Open a browser window and navigate to the [Couchbase Web UI](https://localhost:8091)
+      Now navigate to the [Couchbase Web Console](https://localhost:8091) to login.
 
       Username: Administrator
        
-      Find the Password on the left Under Application info as "Couchbase WebUI Password" (click the "preview secret data" link)
-      
-      fin
+      \*Please note: The password may be found under Application info -> "Couchbase Web Console Password" (click the "preview secret data" link).
   info:
-  - name: Couchbase WebUI Password
+  - name: Couchbase Web Console Password
     type: Reference
     valueFrom:
       secretKeyRef:
