@@ -18,71 +18,64 @@ spec:
       url: https://www.couchbase.com/products/cloud/kubernetes
     - description: 'The Couchbase Autonomous Operator is currently in Beta.  Please BYOL for the Couchbase Clusters you deploy via the Operator'
       url: https://www.couchbase.com/legal/agreements#ProductLicenses
-    - description: 'Full GitHub walkthrough'
-      url: https://github.com/couchbase-partners/marketplace-k8s-app-example/
     - description: 'EULA'
       url: https://www.couchbase.com/ESLA02152018
     notes: |-
-      If all listings display a green checkbox, congratulations you have sucessfully installed the Couchbase Autonomus Operator!   
-      
-      The job of the Couchbase Autonomous Operator is to Manage Couchbase Deployments on Kubernetes; so let's work on to doing that.  
-      
-      The following steps takes a bit of setup but are nothing too difficult.  There will be some command-line work; since we will be using the Couchbase Web Console to manage the clusters.
-      Doing that requires access to a browser from a local environment.  
-      
-      The most important thing to note is you **can not use the cloud shell** if you would like to use the Couchbase Web Console.
-       
-      ### Tool dependencies and install instructions
-      
-      The links below provide all instructions that are needed:
 
-      - [gcloud](https://cloud.google.com/sdk/)
-      - [kubectl](https://kubernetes.io/docs/tasks/tools/install-kubectl/)
+      If all listings display a green checkbox, you have successfully installed the Couchbase Autonomous Operator.  
+      
+      The Couchbase Autonomous Operator manages Couchbase clusters on Kubernetes.  By the end of this guide you will have a running Couchbase cluster.
+      
+      There will be some command-line work, since the Couchbase Web Console is used to manage the clusters.
+      The Couchbase Web Console requires access to an internet browser from a local environment.  
+      
+      The most important thing to note is you **cannot use the cloud shell**, if you would like to use the Couchbase Web Console.
+       
+      ### Tool Installation Instructions
+
+      To setup your local environment please install [gcloud](https://cloud.google.com/sdk/) and [kubectl](https://kubernetes.io/docs/tasks/tools/install-kubectl/)
 
       ### Authorization:
 
-      Log in as yourself by running:
+      With gcloud installed in a local environment, log in as yourself:
       
-      'gcloud auth login'
+      `gcloud auth login`
 
-      Now type the below in your terminal:
+      The values for CLUSTER and ZONE can be found under the "Details" tab.  With those values, set two environment variables in your local terminal (example values are provided):
 
       ```
       CLUSTER=cluster-1
       ZONE=us-west1-a
+      ```
 
-      # Create the cluster.
-      gcloud beta container clusters create "$CLUSTER" \
-          --zone "$ZONE" \
-          --machine-type "n1-standard-1" \
-          --num-nodes "3"
+      Configure kubectl authorization via gcloud by:
+      
+      `gcloud container clusters get-credentials "$CLUSTER" --zone "$ZONE"`
 
-      # Configure kubectl authorization.
-      gcloud container clusters get-credentials "$CLUSTER" --zone "$ZONE"
+      Bootstrap RBAC cluster-admin for your user:
 
-      # Bootstrap RBAC cluster-admin for your user.
-      # More info: https://cloud.google.com/kubernetes-engine/docs/how-to/role-based-access-control
+      ```
       kubectl create clusterrolebinding cluster-admin-binding \
         --clusterrole cluster-admin --user $(gcloud config get-value account)
       ```
 
-      # Deploy Couchbase Clusters
+      ### Deploying a Couchbase Cluster
       
-      The Operator is running so take a look with:
+      In the local terminal window view the operator details by:
 
       `kubectl get deployments -o wide`
 
-      To run a Couchbase Cluster in a terminal we create a file called created-cb-cluster.yaml using the contents below:
+      Create a file called created-cb-cluster.yaml in your local terminal, using the contents below:
 
-      ```yaml
-      ApiVersion: couchbase.database.couchbase.com/v1beta1
+      ```
+      apiVersion: couchbase.database.couchbase.com/v1beta1
       kind: CouchbaseCluster
       metadata:
         name: cb-cluster-member
       spec:
         baseImage: couchbase/server
         version: enterprise-5.1.0
-        authSecret: cb-operator-1-secret
+        authSecret: $name-secret
         exposeAdminConsole: true
         cluster:
           dataServiceMemoryQuota: 256
@@ -94,14 +87,14 @@ spec:
           - name: default
             type: couchbase
             memoryQuota: 128
-            replicas: 2
+            replicas: 1
             ioPriority: high
             evictionPolicy: fullEviction
             conflictResolution: seqno
             enableFlush: true
             enableIndexReplica: false
         servers:
-          - size: 5
+          - size: 3
             name: all_services
             services:
               - data
@@ -112,33 +105,35 @@ spec:
             indexPath: /opt/couchbase/var/lib/couchbase/data
       ```
 
-      Make sure that your authSecret value in your file matches the "Secret" under "Components" value (on the left).  Add any additonal edits that you deem necessary.
+      The file defines a Couchbase cluster with 3 nodes each running the data, index, query and search services.
 
-      Now we use our recently created file to deploy our Couchbase Clusters using kubectl:
+      Apply the file to your environment with the following command:
 
       `kubectl apply -f created-cb-cluster.yaml`
 
-      We want to Wait until at least the first node is ready:
+      Wait until at least the first node is ready:
 
       `kubectl get pods --watch`
 
-      Control-C to cancel the watch after at least one is ready (the output will look similar to below):
+      Use the shortcut combination Control-C to cancel the watch, after at least one node is ready (the output will look similar to below):
 
       ```
                      NAME                                 READY     STATUS                             
       cb-cluster-member-0000                              1/1       Running
       ```
 
-      Now we need to forward ports so that we can access the Couchbase Web Console.  Open a __new terminal window__ and run:
+      Certain ports have to be forwarded so that the Couchbase Web Console can be accessed.  
+      
+      Open a __new terminal window__ (as the next command must continue to run) and run the command:
 
       `kubectl port-forward cb-cluster-member-0000 8091:8091`
 
-      Now navigate to the [Couchbase Web Console](https://localhost:8091) to login.
+      Now navigate to the Couchbase Web Console at __http://localhost:8091__ to login.
 
-      Username: Administrator
-       
-      \*Please note: The password may be found under Application info -> "Couchbase Web Console Password" (click the "preview secret data" link).
+      \*Please note: The username and password may be found under Application info.
   info:
+  - name: Couchbase Web Console Username
+    value: $dbUsername
   - name: Couchbase Web Console Password
     type: Reference
     valueFrom:
