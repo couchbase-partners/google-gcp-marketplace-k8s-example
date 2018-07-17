@@ -12,13 +12,15 @@ spec:
     description: |-
       Manage Couchbase Deployments on Kubernetes
     links:
-    - description: 'For all things related to Couchbase:'
-      url: https://www.couchbase.com/
-    - description: 'Manage Couchbase Deployments on Kubernetes'
+    - description: 'Couchbase Autonomous Operator Overview'
       url: https://www.couchbase.com/products/cloud/kubernetes
-    - description: 'The Couchbase Autonomous Operator is currently in Beta.  Please BYOL for the Couchbase Clusters you deploy via the Operator'
-      url: https://www.couchbase.com/legal/agreements#ProductLicenses
-    - description: 'EULA'
+    - description: 'Couchbase Autonomous Operator Documentation'
+      url: http://docs.couchbase.com/prerelease/couchbase-operator/beta/prerequisiteAndSetup.html
+    - description: 'Couchbase Official Documentation'
+      url: https://developer.couchbase.com/server
+    - description: 'The Couchbase Autonomous Operator is provided at no charge while in beta.  However, for Couchbase Server you are required to provide your own license'
+      url: https://www.couchbase.com/subscriptions-and-support#pricingForm 
+    - description: 'By using Couchbase Software, you agree to this End User License Agreement'
       url: https://www.couchbase.com/ESLA02152018
     notes: |-
 
@@ -29,13 +31,14 @@ spec:
       There will be some command-line work, since the Couchbase Web Console is used to manage the clusters.
       The Couchbase Web Console requires access to an internet browser from a local environment.  
       
-      The most important thing to note is you **cannot use the cloud shell**, if you would like to use the Couchbase Web Console.
-       
-      ### Tool Installation Instructions
+      The most important thing to note is you **cannot exclusively use the cloud shell**, if you would like to use the Couchbase Web Console.  A linux/Mac terminal environment on a host machine
+      is required.
+      
+      ### Required Tools Installation and Setup 
 
       To setup your local environment please install [gcloud](https://cloud.google.com/sdk/) and [kubectl](https://kubernetes.io/docs/tasks/tools/install-kubectl/)
 
-      ### Authorization:
+      ### Authorizing your Account
 
       With gcloud installed in a local environment, log in as yourself:
       
@@ -61,7 +64,7 @@ spec:
 
       ### Deploying a Couchbase Cluster
       
-      In the local terminal window view the operator details by:
+      In the local terminal window view the operator details by typing:
 
       `kubectl get deployments -o wide`
 
@@ -121,6 +124,8 @@ spec:
                      NAME                                 READY     STATUS                             
       cb-cluster-member-0000                              1/1       Running
       ```
+  
+      ### Accessing the Couchbase Web Console
 
       Certain ports have to be forwarded so that the Couchbase Web Console can be accessed.  
       
@@ -131,6 +136,7 @@ spec:
       Now navigate to the Couchbase Web Console at __http://localhost:8091__ to login.
 
       \*Please note: The username and password may be found under Application info.
+
   info:
   - name: Couchbase Web Console Username
     value: $dbUsername
