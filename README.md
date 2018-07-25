@@ -77,7 +77,15 @@ To forward ports so we can access the Couchbase WebUI, open a new terminal windo
 
 In a browser window navigate to the [Couchbase Web Console](https://localhost:8091)
 
+### Viewing the Application via GCP Marketplace
+You may want to view the details of your application from a GCP perspective.
+
+Login to [GCP](https://https://console.cloud.google.com/) and navigate from the hamburger menu to Kubernetes Engine -> Applications.  
+
+Click the name of the couchbase deployment (e.g. couchbase-operator-1), to go to the applications information page.
+
 ### Couchbase Configuration Changes
+
 If you would like to make edits to the Couchbase configuration, you may do that via the Couchbase Web Console or through kubectl.  
 
 To edit the configuration via kubectl, change the desired values in created-cb-cluster.yaml
