@@ -1,105 +1,90 @@
 # Overview
 
-This repository contains example Kubernetes applications ("apps") that meet the
-requirements for integration with Google Cloud Marketplace. For a complete
-description of those requirements, see the technical onboarding guide.
-*TODO: add link*
+Couchbase’s mission is to be the data platform that revolutionizes digital innovation. To make this possible, Couchbase created the world’s first Engagement Database, built on the most powerful NoSQL technology.
 
-The related [marketplace-k8s-app-tools](https://github.com/GoogleCloudPlatform/marketplace-k8s-app-tools)
-repository contains utilities for testing the integration of an app with
-Marketplace, including a test harness for simulating UI-based deployment.
-The repository is submoduled under `/vendor/marketplace-tools`.
+> The Couchbase Autonomous Operator for Kubernetes enables cloud portability and automates > > operational best practices for deploying and managing the Couchbase Data Platform. To optimize integration, we maintain strategic partnerships with enterprise Kubernetes providers, including  GCP MarketPlace Kubernetes applications. As a result, we’re the only NoSQL vendor to offer native integration of Kubernetes with the Couchbase Data Platform
 
-# Getting started
+## Acquire License
 
-## Updating git submodules
+The Couchbase Autonomous Operator is provided at no charge while in beta.  However, for Couchbase Server you are required to provide your own [license](https://www.couchbase.com/subscriptions-and-support#pricingForm)
 
-You can run the following commands to make sure submodules
-are populated with proper code.
+## Quickly Install via Google Cloud Platform Marketplace
 
-```shell
-git submodule sync --recursive
-git submodule update --recursive --init --force
+Get up and running with a few clicks! Install the Couchbase Operator app to a
+Google Kubernetes Engine cluster using Google Cloud Marketplace. To get start simply follow the [on-screen instructions](https://console.cloud.google.com/marketplace/details/couchbase-public/couchbase-operator):
+
+## Command-line Instructions
+
+Deploying a Couchbase Autonomous Operator Instance to the GCP Marketplace by command-line is supported.
+
+After a command-line deployment you will be able to view your instance both through the GCP UI and a local kubectl client.
+
+These [instructions](https://github.com/GoogleCloudPlatform/marketplace-k8s-app-tools/) provide the installation and setup information needed.  The section "Development guide" is not relevant for this user guide and can be ignored.
+
+Additionally, you need to have __envsubst__ installed which is part of the [gettext](https://www.gnu.org/software/gettext/) package.
+
+The working directory will be the **couchbase** directory, directly off of the root of the repository.  
+
+Navigate to the couchbase directory:
+
+`cd couchbase`
+
+### Environment Variables
+
+The file exports.sh defines the environment variables needed for this user guide.
+
+Most of the environment variables have reasonable defaults however, you **must change** the environment variable **REGISTRY** to match your GCP project's location.
+
+It is also recommended that you change the **DB_PASSWORD** and **DB_USERNAME** variables.
+
+Password and Username Rules can be found on the [official couchbase website] (https://developer.couchbase.com/documentation/server/5.1/security/security-passwords.html#topic_iyx_5ps_lq).
+
+Set the environment variables from exports.sh and substitute those environment variables from 3a-parameter-cb-cluster.yaml into a new file created-cb-cluster.yaml:
+
+```script
+source ./exports.sh && envsubst < 3a-parameter-cb-cluster.yaml > created-cb-cluster.yaml
 ```
 
-## Setting up your cluster and environment
+### Deploying the Couchbase Autonomous Operator
 
-See [Getting Started](https://github.com/GoogleCloudPlatform/marketplace-k8s-app-tools/blob/master/README.md#getting-started)
+The first step is to install the [Custom Resource Definition (CRD)](https://kubernetes.io/docs/concepts/extend-kubernetes/api-extension/custom-resources/#customresourcedefinitions).  This has to be done once per cluster.
 
-## Installing Wordpress
+`make crd/install`
 
-Run the following commands from within `wordpress` folder.
+Deploy the Couchbase Autonomous Operator with:
 
-Do a one time setup for application CRD:
+`make app/install`
 
-```shell
-make crd/install
-```
+Now that the operator is deployed, we wait until the operator shows as available:
 
-Build and install Wordpress onto your cluster:
+`kubectl get deployments --watch`
 
-```shell
-make app/install
-```
+Control-C to cancel the watch after that the operator shows available.
 
-This will build the containers and install the application. You can
-watch the kubernetes resources being created directly from your CLI
-by running:
+Deploy your Couchbase cluster with:
 
-```shell
-make app/watch
-```
+`kubectl apply -f created-cb-cluster.yaml`
 
-To delete the installation, run:
+Wait until at least the first node is ready
 
-```shell
-make app/uninstall
-```
+`kubectl get pods --watch`
 
-## Overriding context values (Optional)
+Control-C to cancel the watch after at least one is ready.
 
-By default `make` derives docker registry and k8s namespace
-from your local configurations of `gcloud` and `kubectl`. 
+To forward ports so we can access the Couchbase WebUI, open a new terminal window and run:
 
-You can see these values using
+`kubectl port-forward cb-cluster-member-0000 8091:8091`
 
-```shell
-kubectl config view
-```
+In a browser window navigate to the [Couchbase Web Console](https://localhost:8091)
 
-If you want to use values that differ from the local context of `gcloud` and `kubectl`,
-you can override them by exporting the appropriate environment variables:
+### Couchbase Configuration Changes
+If you would like to make edits to the Couchbase configuration, you may do that via the Couchbase Web Console or through kubectl.  
 
-```shell
-export REGISTRY=gcr.io/your-registry
-export NAMESPACE=your-namespace
-export APP_INSTANCE_NAME=your-installation-name
-export APP_TAG=your-tag
-```
+To edit the configuration via kubectl, change the desired values in created-cb-cluster.yaml
+and rerun the kubectl apply command:
 
-# Marketplace Integration Requirements
+`kubectl apply -f created-cb-cluster.yaml`
 
-Briefly, apps must support two modes of installation:
-- **CLI**: via a Kubernetes client tool like kubectl or helm
-- **Marketplace UI**: via the deployment container ("deployer") mechanism.
+The changes made through kubectl are reflected in the Couchbase Web Console.
 
-A few additional Marketplace requirements are described below.
-
-## Application resource and controller
-
-Apps must supply an Application resource conforming to the
-[Kubernetes community proposal](https://github.com/kubernetes/community/pull/1629).
-The proposal describes the Application resource, as well as a corresponding
-controller that would be responsible for application-generic functionality such
-as assigning owner references to application components.
-
-**Temporary Note**: the public source repository associated with the proposal is
-not yet available. In the interim, we have an equivalent CRD and controller in
-the marketplace-k8s-app-tools repository. Expect changes once the public repo is
-available.
-
-## Deployer
-
-Apps must supply a deployment container image ("deployer") which is used in
-UI-based deployment. This image should extend from one of the base images
-provided in the marketplace-k8s-app-tools repository.
+fin
