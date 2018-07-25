@@ -2,11 +2,20 @@
 
 Couchbase’s mission is to be the data platform that revolutionizes digital innovation. To make this possible, Couchbase created the world’s first Engagement Database, built on the most powerful NoSQL technology.
 
-> The Couchbase Autonomous Operator for Kubernetes enables cloud portability and automates > > operational best practices for deploying and managing the Couchbase Data Platform. To optimize integration, we maintain strategic partnerships with enterprise Kubernetes providers, including  GCP MarketPlace Kubernetes applications. As a result, we’re the only NoSQL vendor to offer native integration of Kubernetes with the Couchbase Data Platform
+> The Couchbase Autonomous Operator for Kubernetes enables cloud portability and automates > > operational best practices for deploying and managing the Couchbase Data Platform. To optimize integration, we maintain strategic partnerships with enterprise Kubernetes providers, including GCP MarketPlace - Kubernetes applications. As a result, we’re the only NoSQL vendor to offer native integration of Kubernetes with the Couchbase Data Platform
 
-## Acquire License
+This user guide provides information on deploying the Couchbase Autonomous Operator (and eventually a Couchbase Server Cluster) on the GCP Marketplaces - Kubernetes Applications. 
 
-The Couchbase Autonomous Operator is provided at no charge while in beta.  However, for Couchbase Server you are required to provide your own [license](https://www.couchbase.com/subscriptions-and-support#pricingForm)
+There are two methods to do this:
+
+- Through the GCP Marketplace UI (section: Quickly Install via Google Cloud Platform Marketplace)
+- Through the command-line (section: Command-line Instructions)
+
+Choose the method you deem most appropriate, though there is no harm in attempting both.
+
+## Acquire Licenses
+
+The Couchbase Autonomous Operator is provided at no charge while in beta.  However, for Couchbase Server you are required to provide your own [licenses](https://www.couchbase.com/subscriptions-and-support#pricingForm).
 
 ## Quickly Install via Google Cloud Platform Marketplace
 
