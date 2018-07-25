@@ -4,100 +4,62 @@ Couchbase’s mission is to be the data platform that revolutionizes digital inn
 
 > The Couchbase Autonomous Operator for Kubernetes enables cloud portability and automates > > operational best practices for deploying and managing the Couchbase Data Platform. To optimize integration, we maintain strategic partnerships with enterprise Kubernetes providers, including  GCP MarketPlace Kubernetes applications. As a result, we’re the only NoSQL vendor to offer native integration of Kubernetes with the Couchbase Data Platform
 
-
-
-## Prerequisites
-
-#### Acquire License
+## Acquire License
 
 The Couchbase Autonomous Operator is provided at no charge while in beta.  However, for Couchbase Server you are required to provide your own [license](https://www.couchbase.com/subscriptions-and-support#pricingForm)
 
-### Quickly Install via Google Cloud Platform Marketplace
+## Quickly Install via Google Cloud Platform Marketplace
 
 Get up and running with a few clicks! Install the Couchbase Operator app to a
 Google Kubernetes Engine cluster using Google Cloud Marketplace. To get start simply follow the [on-screen instructions](https://console.cloud.google.com/marketplace/details/couchbase-public/couchbase-operator):
 
-### Command-line Instructions
+## Command-line Instructions
 
-There are some steps that you we have to complete before we can get to installing Couchbase in the Marketplace.  It is important to know there will be some command line work regardless of method you choose.  This is because we will be using the Couchbase Admin WebUI to manage the clusters.  The important thing to note is you **can not use the cloud shell** to complete all steps.
+Deploying a Couchbase Autonomous Operator Instance to the GCP Marketplace by command-line is supported.
 
-### Google Cloud MarketPlace UI Deployments
+After a command-line deployment you will be able to view your instance both through the GCP UI and a local kubectl client.
 
-For those using the __Google Cloud MarketPlace UI__ to deploy, only need to follow select sections:
+These [instructions](https://github.com/GoogleCloudPlatform/marketplace-k8s-app-tools/) provide the installation and setup information needed.  The section "Development guide" is not relevant for this user guide and can be ignored.
 
-Tool dependencies:
+Additionally, you need to have __envsubst__ installed which is part of the [gettext](https://www.gnu.org/software/gettext/) package.
 
-- gcloud
-- kubectl
+The working directory will be the **couchbase** directory, directly off of the root of the repository.  
 
-Authorization:
-Provisioning a GKE cluster and configuring kubectl to connect to it:
+Navigate to the couchbase directory:
 
-If you are using the command line all sections are relevant.
+`cd couchbase`
 
-These [instructions](https://github.com/GoogleCloudPlatform/marketplace-k8s-app-tools/) gives you the core pieces that you need.
+### Environment Variables
 
-### Commandline Setup
+The file exports.sh defines the environment variables needed for this user guide.
 
-Start by cloning the repo from [github](https://github.com/couchbase-partners/marketplace-k8s-app-example/).
+Most of the environment variables have reasonable defaults however, you **must change** the environment variable **REGISTRY** to match your GCP project's location.
 
-These [instructions](https://github.com/GoogleCloudPlatform/marketplace-k8s-app-tools/) gives you the core pieces that you need.
+It is also recommended that you change the **DB_PASSWORD** and **DB_USERNAME** variables.
 
-We will work **exclusively** in the __couchbase__ directory.
+Password and Username Rules can be found on the [official couchbase website] (https://developer.couchbase.com/documentation/server/5.1/security/security-passwords.html#topic_iyx_5ps_lq).
 
-We continue preparing our environment with a few more tools. You need to have __envsubst__  which is part of the [gettext](https://www.gnu.org/software/gettext/) package installed for this walkthrough check if you do by:  
+Set the environment variables from exports.sh and substitute those environment variables from 3a-parameter-cb-cluster.yaml into a new file created-cb-cluster.yaml:
 
-`which envsubst`
-
-If it comes up blank then run (for Mac), for others please use the above link for your environment:
-
-`brew install gettext && brew link --force gettext`
-
-Repeat the which command above again and it will be in your path.
-
-You must have the command __envsubst__, which is part of the [gettext](https://www.gnu.org/software/gettext/) package installed.
-Check if you have it installed by:  
-
-```
-which envsubst
-```
-
-If it comes up blank then run (for Mac), for others please use the above link for your environment:
-
-```
-brew install gettext && brew link --force gettext
-```
-
-Repeat the __which__ command above again and it will be in your path.
-
-Edit environment variables to modify your Couchbase deployment by editing the file __exports.sh__ found in the __couchbase__ directory.
-
-Referencing the [password policy](https://developer.couchbase.com/documentation/server/current/security/security-passwords.html) for Couchbase
-will be useful here.
-
-With those environment variables set 
-Substitute the environment variables in exports.sh with:
-
-```
+```script
 source ./exports.sh && envsubst < 3a-parameter-cb-cluster.yaml > created-cb-cluster.yaml
 ```
 
-We now have created the file __created-cb-cluster.yaml__ which we will use later.
+### Deploying the Couchbase Autonomous Operator
 
-Deploy your Operator with:
+The first step is to install the [Custom Resource Definition (CRD)](https://kubernetes.io/docs/concepts/extend-kubernetes/api-extension/custom-resources/#customresourcedefinitions).  This has to be done once per cluster.
 
-```
-make app/install
-```
+`make crd/install`
 
-### Deploying Couchbase Clusters (applies to UI and commandline)
-If you were using the Marketplace UI you have done your clickyclicky work and now have deployed the operator.  You will have some important information on the right side of the post-deploy page.
+Deploy the Couchbase Autonomous Operator with:
 
-We continue by making sure the operator is ready:
+`make app/install`
+
+Now that the operator is deployed, we wait until the operator shows as available:
 
 `kubectl get deployments --watch`
 
-Control-C to cancel the watch after you notice that the operator shows available.
+Control-C to cancel the watch after that the operator shows available.
 
 Deploy your Couchbase cluster with:
 
@@ -109,18 +71,20 @@ Wait until at least the first node is ready
 
 Control-C to cancel the watch after at least one is ready.
 
-Now we need to forward ports so we can access the Couchbase WebUI.  Open a new terminal window and run:
+To forward ports so we can access the Couchbase WebUI, open a new terminal window and run:
 
 `kubectl port-forward cb-cluster-member-0000 8091:8091`
 
-In a browser window navigate to the [Couchbase Web UI](https://localhost:8091)
+In a browser window navigate to the [Couchbase Web Console](https://localhost:8091)
 
-Commandline install: If you haven't changed the defaults:
+### Couchbase Configuration Changes
+If you would like to make edits to the Couchbase configuration, you may do that via the Couchbase Web Console or through kubectl.  
 
-- Username: couchbaseAdmin
-- Password: longPass32d
+To edit the configuration via kubectl, change the desired values in created-cb-cluster.yaml
+and rerun the kubectl apply command:
 
-Marketplace UI install: Your login information is on the right of the post-deploy page.
+`kubectl apply -f created-cb-cluster.yaml`
+
+The changes made through kubectl are reflected in the Couchbase Web Console.
 
 fin
-

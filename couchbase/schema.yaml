@@ -71,12 +71,24 @@ properties:
     default: 5
     minimum: 1
     maximum: 5000
+  autoFailoverTimeout:
+    title: Auto Failover Timeout
+    type: integer
+    default: 5
+    minimum: 1
+    maximum: 5000
   failureThreshold:
     title: Failure Threshold
     type: integer
     default: 19
     minimum: 1
     maximum: 5000
+  servers:
+    title: Number of Couchbase Servers
+    type: integer
+    default: 3
+    minimum: 1
+    maximum: 300
   operatorReplicas:
     title: Operator replicas
     type: integer
@@ -95,6 +107,12 @@ properties:
     default: 8080
     minimum: 1024
     maximum: 65535
+  bucketMemoryQuota:
+    title: Bucket Memory Quota
+    type: integer
+    default: 256
+    minimum: 256
+    maximum: 2147483647
   dataServiceMemoryQuota:
     title: Data Service Memory Quota
     type: integer
@@ -132,9 +150,12 @@ required:
 - couchbaseOperatorImage
 - initialDelaySeconds
 - periodSeconds
+- autoFailoverTimeout
 - failureThreshold
+- servers
 - operatorReplicas
 - clusterReplicas
+- bucketMemoryQuota
 - dataServiceMemoryQuota
 - indexServiceMemoryQuota
 - searchServiceMemoryQuota
