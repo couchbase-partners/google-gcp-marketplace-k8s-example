@@ -29,12 +29,16 @@ APP_PARAMETERS ?= { \
   "namespace": "$(NAMESPACE)", \
   "couchbaseOperatorImage": "$(CB_OP_IMAGE)", \
   "dbUsername": "$(DB_USERNAME)", \
+  "dbPassword": "$(DB_PASSWORD)", \
   "initialDelaySeconds": "$(INIT_DELAY_SEC)", \
   "periodSeconds": "$(PERIOD_SEC)", \
   "failureThreshold": "$(FAIL_THRESHOLD)", \
+  "autoFailoverTimeout": "$(AUTO_FAIL_TIMEOUT)", \
+  "bucketMemoryQuota": "$(BUCKET_MEM_QUOTA)", \
   "operatorReplicas": "$(OP_REPLICAS)", \
   "clusterReplicas": "$(CLUSTER_REPLICAS)", \
   "containerPort": "$(CONTAINER_PORT)", \
+  "servers": "$(SERVERS)", \
   "dataServiceMemoryQuota": "$(DATA_SVC_QUOTA)", \
   "indexServiceMemoryQuota": "$(IDX_SVC_QUOTA)", \
   "searchServiceMemoryQuota": "$(SRC_SVC_QUOTA)" \
