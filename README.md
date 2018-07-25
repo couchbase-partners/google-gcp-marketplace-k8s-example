@@ -11,7 +11,7 @@ There are two methods to do this:
 - Through the GCP Marketplace UI (section: Quickly Install via Google Cloud Platform Marketplace)
 - Through the command-line (section: Command-line Instructions)
 
-Choose the method you deem most appropriate, though there is no harm in attempting both.
+Choose the method that you deem most appropriate, though there is no harm in attempting both.
 
 ## Acquire Licenses
 
