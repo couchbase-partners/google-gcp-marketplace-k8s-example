@@ -46,7 +46,7 @@ Most of the environment variables have reasonable defaults however, you **must c
 
 It is also recommended that you change the **DB_PASSWORD** and **DB_USERNAME** variables.
 
-Password and Username Rules can be found on the [official couchbase website] (https://developer.couchbase.com/documentation/server/5.1/security/security-passwords.html#topic_iyx_5ps_lq).
+Password and Username Rules can be found on the [official couchbase website](https://developer.couchbase.com/documentation/server/5.1/security/security-passwords.html#topic_iyx_5ps_lq).
 
 Set the environment variables from exports.sh and substitute those environment variables from 3a-parameter-cb-cluster.yaml into a new file created-cb-cluster.yaml:
 
@@ -64,23 +64,25 @@ Deploy the Couchbase Autonomous Operator with:
 
 `make app/install`
 
-Now that the operator is deployed, we wait until the operator shows as available:
+Now that the operator is deployed, wait until the operator shows as available:
 
 `kubectl get deployments --watch`
 
-Control-C to cancel the watch after that the operator shows available.
+Use the shortcut __Control-C__ to cancel the watch after that the operator shows available.
 
 Deploy your Couchbase cluster with:
 
 `kubectl apply -f created-cb-cluster.yaml`
 
-Wait until at least the first node is ready
+Wait until at least the first node is ready:
 
 `kubectl get pods --watch`
 
-Control-C to cancel the watch after at least one is ready.
+Use the shortcut __Control-C__ to cancel the watch after at least one is ready.
 
-To forward ports so we can access the Couchbase WebUI, open a new terminal window and run:
+Forward ports so that the Couchbase Web Console can be accessed from a local browser.
+
+Open a new terminal window and run:
 
 `kubectl port-forward cb-cluster-member-0000 8091:8091`
 
@@ -95,13 +97,13 @@ Click the name of the couchbase deployment (e.g. couchbase-operator-1), to go to
 
 ### Couchbase Configuration Changes
 
-If you would like to make edits to the Couchbase configuration, you may do that via the Couchbase Web Console or through kubectl.  
+If you would like to make edits to the Couchbase configuration, you may do that via the [Couchbase Web Console](https://localhost:8091) or through kubectl.  
 
 To edit the configuration via kubectl, change the desired values in created-cb-cluster.yaml
 and rerun the kubectl apply command:
 
 `kubectl apply -f created-cb-cluster.yaml`
 
-The changes made through kubectl are reflected in the Couchbase Web Console.
+The changes to the Couchbase Cluster that are made through kubectl are reflected in the Couchbase Web Console.
 
 fin
