@@ -2,7 +2,7 @@
 
 Couchbase’s mission is to be the data platform that revolutionizes digital innovation. To make this possible, Couchbase created the world’s first Engagement Database, built on the most powerful NoSQL technology.
 
-> The Couchbase Autonomous Operator for Kubernetes enables cloud portability and automates > > operational best practices for deploying and managing the Couchbase Data Platform. To optimize integration, we maintain strategic partnerships with enterprise Kubernetes providers, including GCP MarketPlace - Kubernetes applications. As a result, we’re the only NoSQL vendor to offer native integration of Kubernetes with the Couchbase Data Platform
+> The Couchbase Autonomous Operator for Kubernetes enables cloud portability and automates operational best practices for deploying and managing the Couchbase Data Platform. To optimize integration, we maintain strategic partnerships with enterprise Kubernetes providers, including GCP MarketPlace - Kubernetes applications. As a result, we’re the only NoSQL vendor to offer native integration of Kubernetes with the Couchbase Data Platform
 
 This user guide provides information on deploying the Couchbase Autonomous Operator (and eventually a Couchbase Server Cluster) on the GCP Marketplaces - Kubernetes Applications. 
 
@@ -56,7 +56,9 @@ source ./exports.sh && envsubst < 3a-parameter-cb-cluster.yaml > created-cb-clus
 
 ### Deploying the Couchbase Autonomous Operator
 
-The first step is to install the [Custom Resource Definition (CRD)](https://kubernetes.io/docs/concepts/extend-kubernetes/api-extension/custom-resources/#customresourcedefinitions).  This has to be done once per cluster.
+The first step is to install the [Custom Resource Definition (CRD)](https://kubernetes.io/docs/concepts/extend-kubernetes/api-extension/custom-resources/#customresourcedefinitions).
+
+Do this by running:
 
 `make crd/install`
 
@@ -105,5 +107,13 @@ and rerun the kubectl apply command:
 `kubectl apply -f created-cb-cluster.yaml`
 
 The changes to the Couchbase Cluster that are made through kubectl are reflected in the Couchbase Web Console.
+
+### Deleting a Deployment
+
+To delete a deployment run the combined commands:
+
+```script
+kubectl delete -f created-cb-cluster.yaml && make app/uninstall && make crd/uninstall
+```
 
 fin
