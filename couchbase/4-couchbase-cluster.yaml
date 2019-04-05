@@ -1,18 +1,26 @@
-apiVersion: couchbase.database.couchbase.com/v1beta1
+apiVersion: couchbase.com/v1
 kind: CouchbaseCluster
 metadata:
-  name: cb-example
+  name: cb-cluster-member
 spec:
   baseImage: couchbase/server
-  version: enterprise-5.1.0
+  version: enterprise-6.0.1
   authSecret: cb-operator-1-secret
   exposeAdminConsole: true
+  adminConsoleServices:
+    - data
   cluster:
     dataServiceMemoryQuota: 256
     indexServiceMemoryQuota: 256
     searchServiceMemoryQuota: 256
+    eventingServiceMemoryQuota: 256
+    analyticsServiceMemoryQuota: 1024
     indexStorageSetting: memory_optimized
-    autoFailoverTimeout: 5
+    autoFailoverTimeout: 120
+    autoFailoverMaxCount: 3
+    autoFailoverOnDataDiskIssues: true
+    autoFailoverOnDataDiskIssuesTimePeriod: 120
+    autoFailoverServerGroup: false
   buckets:
     - name: default
       type: couchbase
@@ -23,13 +31,28 @@ spec:
       conflictResolution: seqno
       enableFlush: true
       enableIndexReplica: false
+  securityContext:
+    fsGroup: 1000
   servers:
-    - size: 5
+    - size: 3
       name: all_services
       services:
         - data
         - index
         - query
         - search
-      dataPath: /opt/couchbase/var/lib/couchbase/data
-      indexPath: /opt/couchbase/var/lib/couchbase/data
+        - eventing
+        - analytics
+      pod:
+        volumeMounts:
+          default: couchbase
+          data:  couchbase
+          index: couchbase
+  volumeClaimTemplates:
+    - metadata:
+        name: couchbase
+      spec:
+        storageClassName: standard
+        resources:
+          requests:
+            storage: 3Gi

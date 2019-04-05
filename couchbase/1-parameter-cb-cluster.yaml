@@ -1,0 +1,43 @@
+apiVersion: couchbase.com/v1
+kind: CouchbaseCluster
+metadata:
+  name: cb-cluster-member
+spec:
+  baseImage: couchbase/server
+  version: enterprise-6.0.1
+  authSecret: $SECRET_NAME
+  exposeAdminConsole: true
+  adminConsoleServices:
+    - data
+  cluster:
+    dataServiceMemoryQuota: $DATA_SVC_QUOTA
+    indexServiceMemoryQuota: $IDX_SVC_QUOTA
+    searchServiceMemoryQuota: $SRC_SVC_QUOTA
+    eventingServiceMemoryQuota: $EVT_SVC_QUOTA
+    analyticsServiceMemoryQuota: $ANA_SVC_QUOTA
+    indexStorageSetting: memory_optimized
+    autoFailoverTimeout: $AUTO_FAIL_TIMEOUT
+    autoFailoverMaxCount: $AUTO_FAIL_MAX
+    autoFailoverOnDataDiskIssues: $AUTO_FAIL_ODDI
+    autoFailoverOnDataDiskIssuesTimePeriod: $AUTO_FAIL_ODDI_TP
+    autoFailoverServerGroup: $AUTO_FAIL_SG
+  buckets:
+    - name: default
+      type: couchbase
+      memoryQuota: $BUCKET_MEM_QUOTA
+      replicas: 1
+      ioPriority: high
+      evictionPolicy: fullEviction
+      conflictResolution: seqno
+      enableFlush: true
+      enableIndexReplica: false
+  servers:
+    - size: $SERVERS
+      name: all_services
+      services:
+        - data
+        - index
+        - query
+        - search
+        - analytics
+        - eventing

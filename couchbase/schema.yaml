@@ -11,11 +11,17 @@ properties:
           rulesType: CUSTOM
           rules:
           - apiGroups:
-            - couchbase.database.couchbase.com
+            - couchbase.com
             resources:
             - couchbaseclusters
             verbs:
             - "*"
+          - apiGroups:
+            - storage.k8s.io
+            resources:
+            - storageclasses
+            verbs:
+            - "get"
           - apiGroups:
             - apiextensions.k8s.io
             resources:
@@ -33,6 +39,13 @@ properties:
             - secrets
             verbs:
             - "*"
+          - apiGroups:
+            - ""
+            resources:
+            - persistentvolumes
+            verbs:
+            - "get"
+            - "watch"
           - apiGroups:
             - apps
             resources:
@@ -56,7 +69,7 @@ properties:
         length: 16
   couchbaseOperatorImage:
     type: string
-    default: gcr.io/couchbase-dev/k8s/operator:1.0
+    default: gcr.io/couchbase-dev/k8s/operator:1.1.0
     x-google-marketplace:
       type: IMAGE
   initialDelaySeconds:
@@ -77,6 +90,26 @@ properties:
     default: 5
     minimum: 1
     maximum: 5000
+  autoFailoverMaxCount:
+    title: Auto Failover Max Count
+    type: integer
+    default: 3
+    minimum: 3
+    maximum: 5000
+  autoFailoverODDI:
+    title: Auto Failover On Data Disk Issue
+    type: boolean
+    default: true
+  autoFailoverODDITP:
+    title: Auto Failover On Data Disk Issue Time Period 
+    type: integer
+    default: 120
+    minimum: 5
+    maximum: 5000
+  autoFailoverServerGroup:
+    title: Auto Failover Server Group 
+    type: boolean
+    default: false
   failureThreshold:
     title: Failure Threshold
     type: integer
@@ -89,12 +122,6 @@ properties:
     default: 3
     minimum: 1
     maximum: 300
-  operatorReplicas:
-    title: Operator replicas
-    type: integer
-    default: 1
-    minimum: 1
-    maximum: 10
   clusterReplicas:
     title: Couchbase Cluster Replicas
     type: integer
@@ -131,6 +158,18 @@ properties:
     default: 256
     minimum: 256
     maximum: 2147483647
+  eventingServiceMemoryQuota:
+    title: Search Service Memory Quota
+    type: integer
+    default: 256
+    minimum: 256
+    maximum: 2147483647
+  analyticsServiceMemoryQuota:
+    title: Search Service Memory Quota
+    type: integer
+    default: 1024
+    minimum: 1024
+    maximum: 2147483647
   name:
     type: string
     x-google-marketplace:
@@ -139,6 +178,12 @@ properties:
     type: string
     x-google-marketplace:
       type: NAMESPACE
+  storeClass:
+    type: string
+    x-google-marketplace:
+      type: STORAGE_CLASS
+      storageClass:
+        type: SSD
   # reportingSecret:
    # type: string
    # x-google-marketplace:
@@ -151,14 +196,20 @@ required:
 - initialDelaySeconds
 - periodSeconds
 - autoFailoverTimeout
+- autoFailoverMaxCount
+- autoFailoverODDI
+- autoFailoverODDITP
+- autoFailoverServerGroup
 - failureThreshold
 - servers
-- operatorReplicas
 - clusterReplicas
 - bucketMemoryQuota
 - dataServiceMemoryQuota
 - indexServiceMemoryQuota
 - searchServiceMemoryQuota
+- eventingServiceMemoryQuota
+- analyticsServiceMemoryQuota
 - name
 - namespace
+- storeClass
 # - reportingSecret

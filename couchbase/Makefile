@@ -34,14 +34,20 @@ APP_PARAMETERS ?= { \
   "periodSeconds": "$(PERIOD_SEC)", \
   "failureThreshold": "$(FAIL_THRESHOLD)", \
   "autoFailoverTimeout": "$(AUTO_FAIL_TIMEOUT)", \
+  "autoFailoverMaxCount": "$(AUTO_FAIL_MAX)", \
+  "autoFailoverODDI": "$(AUTO_FAIL_ODDI)", \
+  "autoFailoverODDITP": "$(AUTO_FAIL_ODDI_TP)", \
+  "autoFailoverServerGroup": "$(AUTO_FAIL_SG)", \
   "bucketMemoryQuota": "$(BUCKET_MEM_QUOTA)", \
-  "operatorReplicas": "$(OP_REPLICAS)", \
   "clusterReplicas": "$(CLUSTER_REPLICAS)", \
   "containerPort": "$(CONTAINER_PORT)", \
   "servers": "$(SERVERS)", \
   "dataServiceMemoryQuota": "$(DATA_SVC_QUOTA)", \
   "indexServiceMemoryQuota": "$(IDX_SVC_QUOTA)", \
-  "searchServiceMemoryQuota": "$(SRC_SVC_QUOTA)" \
+  "searchServiceMemoryQuota": "$(SRC_SVC_QUOTA)", \
+  "eventingServiceMemoryQuota": "$(EVT_SVC_QUOTA)", \
+  "analyticsServiceMemoryQuota": "$(ANA_SVC_QUOTA)", \
+  "storeClass": "$(STORAGE_CLASS)" \
 }
 #TESTER_IMAGE ?= $(REGISTRY)/example/wordpress/tester:$(TAG)
 APP_TEST_PARAMETERS ?= { \
